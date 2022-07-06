@@ -1,5 +1,5 @@
 
-In this project, i learning about use of RecyclerView, Adapter, Event click on RecyclerView and more :)
+In this project, i learning about use of RecyclerView, Adapter, use of SQLite, Event click on RecyclerView and more :)
 
 Image from project:
 
