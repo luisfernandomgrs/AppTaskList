@@ -11,4 +11,5 @@
     <color name="_colorPrimary">#9c27b0</color>
     <color name="_colorPrimaryDark">#6c1492</color>
     <color name="_colorAccent">#ae6cba</color>
+    <color name="_backTextView">#77BB86FC</color>
 </resources>
