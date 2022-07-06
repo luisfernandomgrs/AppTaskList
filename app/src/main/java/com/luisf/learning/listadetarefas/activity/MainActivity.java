@@ -1,5 +1,6 @@
 package com.luisf.learning.listadetarefas.activity;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.luisf.learning.listadetarefas.R;
 import com.luisf.learning.listadetarefas.adapter.TarefaAdapter;
 import com.luisf.learning.listadetarefas.databinding.ActivityMainBinding;
+import com.luisf.learning.listadetarefas.helper.DbHelper;
 import com.luisf.learning.listadetarefas.helper.RecyclerItemClickListener;
 import com.luisf.learning.listadetarefas.model.Tarefa;
 
@@ -42,12 +44,21 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         setSupportActionBar(binding.toolbar);
 
-//        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-//        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-//        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-
-        // configurar o recycler
+        // recycler settings
         recyclerView = findViewById(R.id.recyclerView);
+
+        // database settings
+        DbHelper db = new DbHelper(getApplicationContext());
+
+        /*
+        * fields settings - Action to insert records on table
+        *
+        ContentValues cv = new ContentValues();
+        cv.put("description", "Ir ao Supermercado");
+        db.getWritableDatabase().insert("task", null, cv);
+        *
+        * But the recommendation, is use of class DAO (Data Access Object)
+        */
 
         //configurar o evento de clique
         recyclerView.addOnItemTouchListener(

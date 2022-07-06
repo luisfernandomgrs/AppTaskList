@@ -8,14 +8,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.android.material.textfield.TextInputEditText;
 import com.luisf.learning.listadetarefas.R;
+import com.luisf.learning.listadetarefas.helper.TaskDAO;
+import com.luisf.learning.listadetarefas.model.Tarefa;
 
 public class AdicionarTarefaActivity extends AppCompatActivity {
+
+    private TextInputEditText descriptionTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_adicionar_tarefa);
+
+        descriptionTask = findViewById(R.id.descriptionTask);
     }
 
     @Override
@@ -28,7 +35,15 @@ public class AdicionarTarefaActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menuOption_check_task:
-                Toast.makeText(AdicionarTarefaActivity.this, "Opção Salvar selecionada...", Toast.LENGTH_SHORT).show();
+                // Exec action to save data...
+                TaskDAO taskDAO = new TaskDAO(getApplicationContext());
+
+                Tarefa myTask = new Tarefa();
+                myTask.setDescriptionTask("Ir ao Supermercado");
+
+                taskDAO.insert(myTask);
+
+                //Toast.makeText(AdicionarTarefaActivity.this, "Opção Salvar selecionada...", Toast.LENGTH_SHORT).show();
                 break;
         }
         return super.onOptionsItemSelected(item);
