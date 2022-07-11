@@ -35,15 +35,17 @@ public class AdicionarTarefaActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menuOption_check_task:
-                // Exec action to save data...
-                TaskDAO taskDAO = new TaskDAO(getApplicationContext());
+                String taskInsert = descriptionTask.getText().toString();
+                if (!taskInsert.isEmpty()) {
+                    // Exec action to save data...
+                    TaskDAO taskDAO = new TaskDAO(getApplicationContext());
 
-                Tarefa myTask = new Tarefa();
-                myTask.setDescriptionTask("Ir ao Supermercado");
+                    Tarefa myTask = new Tarefa();
+                    myTask.setDescriptionTask(taskInsert);
 
-                taskDAO.insert(myTask);
-
-                //Toast.makeText(AdicionarTarefaActivity.this, "Opção Salvar selecionada...", Toast.LENGTH_SHORT).show();
+                    taskDAO.insert(myTask);
+                    finish();
+                }
                 break;
         }
         return super.onOptionsItemSelected(item);

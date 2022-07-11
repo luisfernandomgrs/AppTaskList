@@ -11,13 +11,13 @@ import java.util.List;
 
 // this class type require a interface class...
 public class TaskDAO implements ITaskDAO {
-    private SQLiteDatabase writeEscreve;
-    private SQLiteDatabase readLe;
+    private SQLiteDatabase dbWrite_Escreve;
+    private SQLiteDatabase dbRead_Le;
 
     public TaskDAO(Context context) {
         DbHelper db = new DbHelper(context);
-        writeEscreve = db.getWritableDatabase();
-        readLe = db.getReadableDatabase();
+        dbWrite_Escreve = db.getWritableDatabase();
+        dbRead_Le = db.getReadableDatabase();
     }
 
     @Override
@@ -27,7 +27,7 @@ public class TaskDAO implements ITaskDAO {
             cv.put("description", taskContent.getDescriptionTask());
             //cv.put("status", "D"); //in case de other new parameter
 
-            writeEscreve.insert(DbHelper.TABLE_TASK, null, cv);
+            dbWrite_Escreve.insert(DbHelper.TABLE_TASK, null, cv);
 
             Log.i("INFO_DB", "Success on inserting new records on table");
         } catch (Exception e) {
