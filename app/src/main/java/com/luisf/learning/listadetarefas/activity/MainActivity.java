@@ -1,9 +1,11 @@
 package com.luisf.learning.listadetarefas.activity;
 
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.util.Log;
@@ -18,15 +20,19 @@ import com.luisf.learning.listadetarefas.adapter.TarefaAdapter;
 import com.luisf.learning.listadetarefas.databinding.ActivityMainBinding;
 import com.luisf.learning.listadetarefas.helper.DbHelper;
 import com.luisf.learning.listadetarefas.helper.RecyclerItemClickListener;
+import com.luisf.learning.listadetarefas.helper.TaskDAO;
 import com.luisf.learning.listadetarefas.model.Tarefa;
 
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import kotlinx.coroutines.scheduling.Task;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private TarefaAdapter tarefaAdapter;
     private List<Tarefa> listaTarefas = new ArrayList<>();
+    private Tarefa currentTaskSelected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,12 +75,41 @@ public class MainActivity extends AppCompatActivity {
                         new RecyclerItemClickListener.OnItemClickListener() {
                             @Override
                             public void onItemClick(View view, int position) {
-                                Log.i("clique", "onItemClick");
+                                //Log.i("clique", "onItemClick");
+                                Tarefa selectedTask = listaTarefas.get(position);
+                                Intent intent = new Intent(MainActivity.this, AdicionarTarefaActivity.class);
+                                intent.putExtra("selectedTask", selectedTask);
+                                startActivity(intent);
                             }
 
                             @Override
                             public void onLongItemClick(View view, int position) {
-                                Log.i("clique", "onLongItemClick");
+                                currentTaskSelected = listaTarefas.get(position);
+
+                                //Log.i("clique", "onLongItemClick");
+                                AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+
+                                //setting layout to use the dialog...
+                                dialog.setTitle("Confirmar exclusão");
+                                dialog.setMessage("Deseja excluir a tarefa \"" + currentTaskSelected.getDescriptionTask() + "\" ?");
+
+                                dialog.setPositiveButton("sim", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        TaskDAO taskDAO = new TaskDAO(getApplicationContext());
+                                        if (taskDAO.delete(currentTaskSelected)) {
+                                            carregarListaTarefas();
+                                            Toast.makeText(getApplicationContext(), "Success on delete current task", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Toast.makeText(getApplicationContext(), "Fail on delete current task", Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                });
+
+                                dialog.setNegativeButton("Não", null);
+
+                                dialog.create();
+                                dialog.show();
                             }
 
                             @Override
@@ -94,7 +130,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void carregarListaTarefas () {
-        listaTarefas.clear();
+        /*
+        //listaTarefas.clear();
 
         // carregar lista de tarefas
         Tarefa tarefa1 = new Tarefa(); tarefa1.setId(1l); tarefa1.setDescriptionTask("Ir ao mercado");
@@ -103,6 +140,10 @@ public class MainActivity extends AppCompatActivity {
         listaTarefas.add(tarefa2);
         Tarefa tarefa3 = new Tarefa(); tarefa3.setId(3l); tarefa3.setDescriptionTask("Ler um livro");
         listaTarefas.add(tarefa3);
+        */
+        // create viewing to the list of tasks
+        TaskDAO taskDAO = new TaskDAO(getApplicationContext());
+        listaTarefas = taskDAO.selectAll();
 
         // configurar adapter
         tarefaAdapter = new TarefaAdapter(listaTarefas);
